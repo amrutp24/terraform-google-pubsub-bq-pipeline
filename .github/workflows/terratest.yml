@@ -1,0 +1,40 @@
+name: Terratest
+
+on:
+  workflow_dispatch:
+    inputs:
+      test_image:
+        description: "Docker image URI for Cloud Run (must already exist in Artifact Registry)"
+        required: true
+
+jobs:
+  terratest:
+    name: Integration Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "~> 1.0"
+          terraform_wrapper: false
+
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
+
+      - name: Run Terratest
+        working-directory: test
+        env:
+          GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
+          TEST_IMAGE: ${{ inputs.test_image }}
+        run: go test -v -timeout 30m -run TestPubsubBqPipeline ./...
