@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  validate:
+    name: Validate
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "~> 1.0"
+
+      - name: Check formatting
+        run: terraform fmt -check -recursive
+
+      - name: Init module
+        run: terraform init -backend=false
+
+      - name: Validate module
+        run: terraform validate
+
+      - name: Init example
+        run: terraform init -backend=false
+        working-directory: examples/basic
+
+      - name: Validate example
+        run: terraform validate
+        working-directory: examples/basic
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Checkov
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: .
+          framework: terraform
+          soft_fail: true
+          output_format: cli
