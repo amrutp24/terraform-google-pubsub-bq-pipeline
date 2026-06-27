@@ -59,6 +59,12 @@ variable "pubsub_invoker_sa_account_id" {
   default     = null
 }
 
+variable "max_delivery_attempts" {
+  description = "Number of delivery attempts before a message is sent to the dead-letter topic"
+  type        = number
+  default     = 5
+}
+
 variable "labels" {
   description = "Labels to apply to all resources"
   type        = map(string)

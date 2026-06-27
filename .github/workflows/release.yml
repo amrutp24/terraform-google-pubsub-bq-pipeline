@@ -1,0 +1,23 @@
+name: Auto Release
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  release:
+    name: Bump version and tag
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Bump version and push tag
+        uses: mathieudutour/github-tag-action@v6.2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          default_bump: patch
+          release_branches: master
+          # Commit message conventions:
+          # feat: ...        → minor bump (1.x.0)
+          # BREAKING CHANGE  → major bump (x.0.0)
+          # anything else    → patch bump (1.0.x)

@@ -22,3 +22,8 @@ output "bq_table_id" {
   description = "BigQuery table ID"
   value       = google_bigquery_table.table.table_id
 }
+
+output "dead_letter_topic_id" {
+  description = "Dead-letter topic ID — messages that exceed max_delivery_attempts land here"
+  value       = google_pubsub_topic.dead_letter.id
+}
