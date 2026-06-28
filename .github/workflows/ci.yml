@@ -50,3 +50,24 @@ jobs:
           framework: terraform
           soft_fail: true
           output_format: cli
+
+  docs:
+    name: Terraform Docs
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    if: github.event_name == 'push'
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+
+      - name: Generate terraform-docs
+        uses: terraform-docs/gh-actions@v1
+        with:
+          working-dir: .
+          output-file: README.md
+          output-method: inject
+          git-push: true
+          git-commit-message: "docs: auto-update terraform-docs"

@@ -65,6 +65,12 @@ variable "max_delivery_attempts" {
   default     = 5
 }
 
+variable "alert_email" {
+  description = "Email address to notify when messages land in the dead-letter topic. Set to null to disable alerting."
+  type        = string
+  default     = null
+}
+
 variable "labels" {
   description = "Labels to apply to all resources"
   type        = map(string)

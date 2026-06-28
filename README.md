@@ -96,6 +96,7 @@ Build and push the Cloud Run image to Artifact Registry before running `terrafor
 
 ## Inputs
 
+<!-- BEGIN_TF_DOCS -->
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|----------|
 | `project` | GCP project ID | `string` | — | yes |
@@ -120,6 +121,8 @@ Build and push the Cloud Run image to Artifact Registry before running `terrafor
 | `subscription_id` | Pub/Sub subscription ID |
 | `bq_dataset_id` | BigQuery dataset ID |
 | `bq_table_id` | BigQuery table ID |
+| `dead_letter_topic_id` | Dead-letter topic ID |
+<!-- END_TF_DOCS -->
 
 ---
 
