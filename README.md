@@ -97,31 +97,74 @@ Build and push the Cloud Run image to Artifact Registry before running `terrafor
 ## Inputs
 
 <!-- BEGIN_TF_DOCS -->
+## Requirements
+
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
+| <a name="requirement_google"></a> [google](#requirement\_google) | >= 4.0, < 6.0 |
+
+## Providers
+
+| Name | Version |
+|------|---------|
+| <a name="provider_google"></a> [google](#provider\_google) | >= 4.0, < 6.0 |
+
+## Modules
+
+No modules.
+
+## Resources
+
+| Name | Type |
+|------|------|
+| [google_artifact_registry_repository.repo](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/artifact_registry_repository) | resource |
+| [google_bigquery_dataset.dataset](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/bigquery_dataset) | resource |
+| [google_bigquery_table.table](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/bigquery_table) | resource |
+| [google_cloud_run_v2_service.service](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/cloud_run_v2_service) | resource |
+| [google_cloud_run_v2_service_iam_member.pubsub_invoker](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/cloud_run_v2_service_iam_member) | resource |
+| [google_monitoring_alert_policy.dead_letter](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/monitoring_alert_policy) | resource |
+| [google_monitoring_notification_channel.dead_letter_email](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/monitoring_notification_channel) | resource |
+| [google_project_iam_member.cloudrun_bq_data_editor](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/project_iam_member) | resource |
+| [google_project_iam_member.cloudrun_bq_job_user](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/project_iam_member) | resource |
+| [google_pubsub_subscription.subscription](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/pubsub_subscription) | resource |
+| [google_pubsub_subscription_iam_member.dead_letter_subscriber](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/pubsub_subscription_iam_member) | resource |
+| [google_pubsub_topic.dead_letter](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/pubsub_topic) | resource |
+| [google_pubsub_topic.topic](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/pubsub_topic) | resource |
+| [google_pubsub_topic_iam_member.dead_letter_publisher](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/pubsub_topic_iam_member) | resource |
+| [google_service_account.cloudrun_sa](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account) | resource |
+| [google_service_account.pubsub_invoker_sa](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account) | resource |
+| [google_project.project](https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/project) | data source |
+
+## Inputs
+
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|----------|
-| `project` | GCP project ID | `string` | — | yes |
-| `region` | GCP region | `string` | — | yes |
-| `topic_name` | Pub/Sub topic name | `string` | — | yes |
-| `bq_dataset_id` | BigQuery dataset ID | `string` | — | yes |
-| `image` | Docker image URI for Cloud Run | `string` | — | yes |
-| `bq_table_id` | BigQuery table ID | `string` | `"events"` | no |
-| `bq_dataset_location` | BigQuery dataset location | `string` | `"US"` | no |
-| `service_name` | Cloud Run service name | `string` | `"pubsub-to-bq"` | no |
-| `cloud_run_max_instances` | Max Cloud Run instances | `number` | `5` | no |
-| `cloudrun_sa_account_id` | Cloud Run service account ID | `string` | `null` | no |
-| `pubsub_invoker_sa_account_id` | Pub/Sub invoker service account ID | `string` | `null` | no |
-| `labels` | Labels to apply to all resources | `map(string)` | `{}` | no |
+|------|-------------|------|---------|:--------:|
+| <a name="input_alert_email"></a> [alert\_email](#input\_alert\_email) | Email address to notify when messages land in the dead-letter topic. Set to null to disable alerting. | `string` | `null` | no |
+| <a name="input_bq_dataset_id"></a> [bq\_dataset\_id](#input\_bq\_dataset\_id) | BigQuery dataset ID | `string` | n/a | yes |
+| <a name="input_bq_dataset_location"></a> [bq\_dataset\_location](#input\_bq\_dataset\_location) | BigQuery dataset location | `string` | `"US"` | no |
+| <a name="input_bq_table_id"></a> [bq\_table\_id](#input\_bq\_table\_id) | BigQuery table ID | `string` | `"events"` | no |
+| <a name="input_cloud_run_max_instances"></a> [cloud\_run\_max\_instances](#input\_cloud\_run\_max\_instances) | Maximum number of Cloud Run instances | `number` | `5` | no |
+| <a name="input_cloudrun_sa_account_id"></a> [cloudrun\_sa\_account\_id](#input\_cloudrun\_sa\_account\_id) | Account ID for the Cloud Run service account (defaults to <service\_name>-sa) | `string` | `null` | no |
+| <a name="input_image"></a> [image](#input\_image) | Docker image URI for the Cloud Run service | `string` | n/a | yes |
+| <a name="input_labels"></a> [labels](#input\_labels) | Labels to apply to all resources | `map(string)` | `{}` | no |
+| <a name="input_max_delivery_attempts"></a> [max\_delivery\_attempts](#input\_max\_delivery\_attempts) | Number of delivery attempts before a message is sent to the dead-letter topic | `number` | `5` | no |
+| <a name="input_project"></a> [project](#input\_project) | GCP project ID | `string` | n/a | yes |
+| <a name="input_pubsub_invoker_sa_account_id"></a> [pubsub\_invoker\_sa\_account\_id](#input\_pubsub\_invoker\_sa\_account\_id) | Account ID for the Pub/Sub invoker service account (defaults to <service\_name>-invoker) | `string` | `null` | no |
+| <a name="input_region"></a> [region](#input\_region) | GCP region | `string` | n/a | yes |
+| <a name="input_service_name"></a> [service\_name](#input\_service\_name) | Name of the Cloud Run service | `string` | `"pubsub-to-bq"` | no |
+| <a name="input_topic_name"></a> [topic\_name](#input\_topic\_name) | Name of the Pub/Sub topic | `string` | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| `cloud_run_url` | URL of the Cloud Run service |
-| `topic_id` | Pub/Sub topic ID |
-| `subscription_id` | Pub/Sub subscription ID |
-| `bq_dataset_id` | BigQuery dataset ID |
-| `bq_table_id` | BigQuery table ID |
-| `dead_letter_topic_id` | Dead-letter topic ID |
+| <a name="output_bq_dataset_id"></a> [bq\_dataset\_id](#output\_bq\_dataset\_id) | BigQuery dataset ID |
+| <a name="output_bq_table_id"></a> [bq\_table\_id](#output\_bq\_table\_id) | BigQuery table ID |
+| <a name="output_cloud_run_url"></a> [cloud\_run\_url](#output\_cloud\_run\_url) | URL of the Cloud Run service |
+| <a name="output_dead_letter_topic_id"></a> [dead\_letter\_topic\_id](#output\_dead\_letter\_topic\_id) | Dead-letter topic ID — messages that exceed max\_delivery\_attempts land here |
+| <a name="output_subscription_id"></a> [subscription\_id](#output\_subscription\_id) | Pub/Sub subscription ID |
+| <a name="output_topic_id"></a> [topic\_id](#output\_topic\_id) | Pub/Sub topic ID |
 <!-- END_TF_DOCS -->
 
 ---
